@@ -1,0 +1,30 @@
+[project]
+name = "alphalens-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "alphalens-database",
+    "boto3>=1.40.29",
+    "openai-agents[litellm]>=0.3.0",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+]
+
+[tool.uv.workspace]
+members = [
+    "database",
+    "shared",
+    "metrics",
+    "api",
+    "orchestrator",
+    "discovery",
+    "validator",
+    "analyst",
+    "portfolio",
+    "qa",
+]
+
+[tool.uv.sources]
+alphalens-database = { workspace = true }
+alphalens-shared = { workspace = true }
+alphalens-metrics = { workspace = true }

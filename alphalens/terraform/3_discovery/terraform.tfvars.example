@@ -1,0 +1,39 @@
+# AlphaLens Guide 4 — Live discovery Lambda
+# Copy to terraform.tfvars and paste REAL keys (not sk-... / BSA... placeholders).
+#
+# This is Terraform HCL, not .env format:
+#   .env:     OPENAI_API_KEY=sk-proj-...
+#   tfvars:   openai_api_key = "sk-proj-..."
+#
+# Map from alphalens/.env:
+#   DEFAULT_AWS_REGION     -> aws_region
+#   BEDROCK_REGION         -> bedrock_region
+#   BEDROCK_MODEL_ID       -> bedrock_model_id
+#   LLM_PROVIDER           -> llm_provider
+#   OPENAI_API_KEY         -> openai_api_key
+#   OPENAI_MODEL_ID        -> openai_model_id
+#   BRAVE_API_KEY          -> brave_api_key
+#   DISCOVERY_MAX_TURNS    -> discovery_max_turns   (number, no quotes)
+#   DISCOVERY_MCP_TIMEOUT  -> discovery_mcp_timeout (number, no quotes)
+#   DISCOVERY_PLAYWRIGHT_MCP -> discovery_playwright_mcp ("true" or "false" string)
+#   MCP_LOGGING            -> mcp_logging ("true" or "false" string)
+#
+# discovery_image_uri is written automatically by backend/discovery/deploy.py
+
+aws_region         = "us-east-1"
+bedrock_region     = "us-west-2"
+bedrock_model_id   = "us.amazon.nova-pro-v1:0"
+llm_provider       = "openai"
+openai_api_key     = "paste-from-alphalens-.env-OPENAI_API_KEY"
+openai_model_id    = "gpt-4.1-mini"
+brave_api_key      = "paste-from-alphalens-.env-BRAVE_API_KEY"
+discovery_max_turns   = 10
+discovery_mcp_timeout = 120
+discovery_playwright_mcp = "true"
+mcp_logging        = "false"
+
+# Optional — persist discovery_runs + candidates (from terraform/1_database outputs)
+# aurora_cluster_arn = "arn:aws:rds:us-east-1:123456789012:cluster:alphalens-aurora-cluster"
+# aurora_secret_arn  = "arn:aws:secretsmanager:us-east-1:123456789012:secret:alphalens-aurora-credentials-xxxxx"
+# database_name      = "alphalens"
+# persist_discovery_runs = "true"

@@ -1,0 +1,26 @@
+# AlphaLens Guide 3 — Agent Orchestra
+# Copy to terraform.tfvars and fill in values from terraform/1_database outputs
+
+aws_region = "us-east-1"
+
+aurora_cluster_arn = "arn:aws:rds:us-east-1:123456789012:cluster:alphalens-aurora-cluster"
+aurora_secret_arn  = "arn:aws:secretsmanager:us-east-1:123456789012:secret:alphalens-aurora-credentials-xxxxx"
+database_name      = "alphalens"
+
+bedrock_model_id = "us.amazon.nova-pro-v1:0"
+bedrock_region   = "us-west-2"
+
+# LLM backend for orchestrator / portfolio / qa zip Lambdas (same keys as alphalens/.env)
+# llm_provider    = "bedrock"
+# openai_api_key  = "paste-from-alphalens-.env-OPENAI_API_KEY"
+# openai_model_id = "gpt-4.1-mini"
+
+# Optional — from terraform/3_discovery output discovery_service_url (Guide 4 live MCP)
+# discovery_service_url = "https://xxxx.lambda-url.us-east-1.on.aws"
+
+# Optional — LLM on zip Lambdas (repackage with backend/{agent}/package_docker.py first)
+# use_llm_orchestration   = false
+# use_llm_portfolio       = false
+# use_llm_qa              = false
+# use_llm_analyst_narrative = false  # orchestrator: LLM report after slim analyst; scores from metrics
+# use_llm_validator_narrative = false  # validator: LLM notes only; tickerValidation from code/yfinance

@@ -1,0 +1,14 @@
+[project]
+name = "alphalens-validator"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "alphalens-shared",
+    "openai>=1.0.0",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "yfinance>=0.2.54",
+]
+
+[tool.uv.sources]
+alphalens-shared = { workspace = true }

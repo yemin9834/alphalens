@@ -1,0 +1,3 @@
+// Placeholder for shared UI components (Layout, cards, tables, warnings)
+
+export {};

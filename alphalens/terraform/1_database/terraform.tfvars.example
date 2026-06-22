@@ -1,0 +1,13 @@
+# AlphaLens Database — copy to terraform.tfvars and adjust
+
+aws_region = "us-east-1"
+
+# Aurora Serverless v2 scaling (0.5 ACU ≈ $43/month minimum)
+min_capacity = 0.5
+max_capacity = 1.0
+
+# Optional overrides
+# database_name           = "alphalens"
+# master_username         = "alphalensadmin"
+# engine_version          = "15.12"
+# backup_retention_period = 7

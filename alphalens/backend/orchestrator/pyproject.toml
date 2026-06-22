@@ -1,0 +1,22 @@
+[project]
+name = "alphalens-orchestrator"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "alphalens-database",
+    "alphalens-metrics",
+    "alphalens-shared",
+    "boto3>=1.40.8",
+    "openai-agents[litellm]>=0.3.0",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "tenacity>=9.1.2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0.0"]
+
+[tool.uv.sources]
+alphalens-database = { workspace = true }
+alphalens-metrics = { workspace = true }
+alphalens-shared = { workspace = true }

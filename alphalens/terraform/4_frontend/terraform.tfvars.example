@@ -1,0 +1,23 @@
+# AlphaLens Guide 5 — Frontend & API
+# Copy to terraform.tfvars and fill in optional values.
+#
+# Database, SQS, and discovery URLs are read automatically from local state:
+#   ../1_database/terraform.tfstate
+#   ../2_agents/terraform.tfstate
+#   ../3_discovery/terraform.tfstate (optional)
+
+aws_region = "us-east-1"
+
+cors_origins = ["http://localhost:3000"]
+
+# Clerk (when auth is enabled)
+clerk_jwks_url = ""
+clerk_issuer   = ""
+
+# Q&A LLM runs on alphalens-qa (terraform/2_agents use_llm_qa). API invokes alphalens-qa
+# via Lambda and streams the answer in chunks.
+
+# Live discovery (CloudFront uses Lambda Function URL — not limited to API Gateway 30s)
+# api_lambda_timeout     = 300
+# discovery_http_timeout = 300
+# public_app_url         = "https://YOUR.cloudfront.net"  # CORS for direct stream calls

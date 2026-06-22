@@ -1,0 +1,26 @@
+[project]
+name = "alphalens-discovery"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "alphalens-database",
+    "alphalens-metrics",
+    "alphalens-shared",
+    "fastapi>=0.116.1",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "uvicorn>=0.35.0",
+    "yfinance>=0.2.61",
+]
+
+[dependency-groups]
+llm = [
+    "openai-agents[litellm]>=0.3.0",
+    "mcp>=1.9.0",
+    "tenacity>=9.1.2",
+]
+
+[tool.uv.sources]
+alphalens-database = { workspace = true }
+alphalens-metrics = { workspace = true }
+alphalens-shared = { workspace = true }

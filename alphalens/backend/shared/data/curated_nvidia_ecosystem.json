@@ -1,0 +1,33 @@
+{
+  "coreCompany": "NVIDIA",
+  "coreTicker": "NVDA",
+  "candidates": [
+    {
+      "companyName": "Taiwan Semiconductor Manufacturing Company",
+      "ticker": "TSM",
+      "relationshipType": "supplier",
+      "relationshipSummary": "TSMC provides semiconductor manufacturing services for NVIDIA chips.",
+      "confidence": "High",
+      "evidenceUrl": "Data unavailable for mock demo",
+      "tickerValidation": "validated"
+    },
+    {
+      "companyName": "Microsoft",
+      "ticker": "MSFT",
+      "relationshipType": "partner",
+      "relationshipSummary": "Microsoft Azure offers NVIDIA GPU instances for AI workloads.",
+      "confidence": "High",
+      "evidenceUrl": "Data unavailable for mock demo",
+      "tickerValidation": "validated"
+    },
+    {
+      "companyName": "Broadcom",
+      "ticker": "AVGO",
+      "relationshipType": "ecosystem",
+      "relationshipSummary": "Broadcom supplies networking and custom silicon used in AI infrastructure.",
+      "confidence": "Medium",
+      "evidenceUrl": "Data unavailable for mock demo",
+      "tickerValidation": "validated"
+    }
+  ]
+}

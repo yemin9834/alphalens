@@ -5,6 +5,7 @@ In this guide, you'll deploy the Alex Researcher service - an AI agent that gene
 ## Prerequisites
 
 Before starting, ensure you have:
+
 1. Completed Guides 1-3 (SageMaker, S3 Vectors, and Ingest Pipeline deployed)
 2. Docker Desktop installed and running
 3. AWS CLI configured with your credentials
@@ -20,10 +21,10 @@ After answering questions, say exactly which guide you're on and any issues. Be 
 
 ## What You'll Deploy
 
-<span style="color:red">IMPORTANT: MAJOR CHANGE:</span> The researcher deployment now uses AWS Lambda with a public Function URL instead of App Runner. This PR keeps the existing guide intact and adds only this clarification. See `terraform/4_researcher/main.tf`, `backend/researcher/deploy.py`, `backend/researcher/Dockerfile`, `backend/researcher/mcp_servers.py`, and `backend/researcher/server.py` for the focused implementation changes.
-
+IMPORTANT: MAJOR CHANGE: The researcher deployment now uses AWS Lambda with a public Function URL instead of App Runner. This PR keeps the existing guide intact and adds only this clarification. See `terraform/4_researcher/main.tf`, `backend/researcher/deploy.py`, `backend/researcher/Dockerfile`, `backend/researcher/mcp_servers.py`, and `backend/researcher/server.py` for the focused implementation changes.
 
 The Researcher service is an AWS App Runner application that:
+
 - Uses the OpenAI Agents SDK for agent orchestration and tracing
 - Uses AWS Bedrock with OpenAI's OSS 120B model for AI capabilities
 - Employs a Playwright MCP (Model Context Protocol) server for web browsing and data retrieval
@@ -51,6 +52,8 @@ graph LR
     style SchedLambda fill:#FF9900
 ```
 
+
+
 ## Step 0: Request Access to Bedrock Models
 
 The Researcher uses AWS Bedrock with OpenAI's open-source OSS 120B model. You need to request access to this model first.
@@ -64,13 +67,14 @@ The Researcher uses AWS Bedrock with OpenAI's open-source OSS 120B model. You ne
 5. Click **Manage model access** or **Modify model access**
 6. Find the **OpenAI** section
 7. Check the boxes for:
-   - **gpt-oss-120b** (OpenAI GPT OSS 120B)
-   - **gpt-oss-20b** (OpenAI GPT OSS 20B) - optional, smaller model
+  - **gpt-oss-120b** (OpenAI GPT OSS 120B)
+  - **gpt-oss-20b** (OpenAI GPT OSS 20B) - optional, smaller model
 8. Click **Request model access** at the bottom
 9. Wait for approval (usually instant for these models)
 10. As an alternative - request access to the Amazon Nova models in your region or in us-east-1
 
 **Important Notes:**
+
 - ⚠️ The OSS models are ONLY available in **us-west-2** region
 - ✅ Your App Runner service can be in any region (e.g., us-east-1) and will connect cross-region to us-west-2
 - The OSS models are open-weight models from OpenAI, not the commercial GPT models
@@ -115,11 +119,13 @@ Note that nova-lite is not an acceptable choice as it doesn't support tool calli
 First, ensure you have your OpenAI API key and the values from Part 3 in your `.env` file.
 
 Open the `.env` file in your project root using Cursor's file explorer and verify you have these values:
+
 - `OPENAI_API_KEY` - Your OpenAI API key (required for agent tracing)
 - `ALEX_API_ENDPOINT` - From Part 3
 - `ALEX_API_KEY` - From Part 3
 
 If you haven't added your OpenAI API key yet, add this line to the `.env` file:
+
 ```
 OPENAI_API_KEY=sk-...  # Your actual OpenAI API key (required for agent tracing)
 ```
@@ -133,6 +139,7 @@ cp terraform.tfvars.example terraform.tfvars
 ```
 
 Edit `terraform.tfvars` and update with your values from the `.env` file:
+
 ```hcl
 aws_region = "us-east-1"  # Your AWS region
 openai_api_key = "sk-..."  # Your OpenAI API key
@@ -163,8 +170,8 @@ terraform init
 terraform apply -target="aws_ecr_repository.researcher" -target="aws_iam_role.app_runner_role"
 ```
 
-
 Type `yes` when prompted. This creates:
+
 - ECR repository for your Docker images
 - IAM roles with proper permissions for App Runner
 
@@ -180,6 +187,7 @@ uv run deploy.py
 ```
 
 This script will:
+
 1. Build a Docker image (with `--platform linux/amd64` for compatibility)
 2. Push it to your ECR repository
 3. Trigger an App Runner deployment
@@ -190,6 +198,7 @@ This script will:
 The deployment script automatically builds for `linux/amd64` architecture to ensure compatibility with AWS App Runner. This is why you'll see "Building Docker image for linux/amd64..." in the output.
 
 When the Docker image push completes, you'll see:
+
 ```
 ✅ Docker image pushed successfully!
 ```
@@ -205,6 +214,7 @@ terraform apply
 ```
 
 Type `yes` when prompted. This will:
+
 - Create the App Runner service using your Docker image
 - Configure environment variables for the service
 - Set up the optional EventBridge scheduler (if enabled)
@@ -236,6 +246,7 @@ uv run test_research.py
 ```
 
 This script will:
+
 1. Find your App Runner service URL automatically
 2. Check that the service is healthy
 3. Generate research on a trending topic (default)
@@ -243,6 +254,7 @@ This script will:
 5. Automatically store it in your knowledge base
 
 You can also research specific topics:
+
 ```bash
 uv run test_research.py "Tesla competitive advantages"
 uv run test_research.py "Microsoft cloud revenue growth"
@@ -260,6 +272,7 @@ uv run test_search_s3vectors.py
 ```
 
 You should see your research in the database with:
+
 - The research content
 - Embeddings generated by SageMaker
 - Metadata including timestamp and topic
@@ -283,16 +296,19 @@ Now that your service is deployed and tested, let's explore its capabilities.
 Verify the service is healthy:
 
 **Mac/Linux:**
+
 ```bash
 curl https://YOUR_SERVICE_URL/health
 ```
 
 **Windows PowerShell:**
+
 ```powershell
 Invoke-WebRequest -Uri "https://YOUR_SERVICE_URL/health" | ConvertFrom-Json
 ```
 
 You should see:
+
 ```json
 {
   "service": "Alex Researcher",
@@ -305,21 +321,19 @@ You should see:
 ### Try Different Topics
 
 1. **Generate Multiple Analyses:**
-   ```bash
+  ```bash
    uv run test_research.py "NVIDIA AI chip market share"
    uv run test_research.py "Apple services revenue growth"
    uv run test_research.py "Gold vs Bitcoin as inflation hedge"
-   ```
-
+  ```
 2. **Search Across Topics:**
-   ```bash
+  ```bash
    # Navigate to the backend/ingest directory
    uv run test_search_s3vectors.py "artificial intelligence"
    uv run test_search_s3vectors.py "inflation protection"
-   ```
-
+  ```
 3. **Build Your Knowledge Base:**
-   Try different investment topics and build a comprehensive knowledge base for portfolio management.
+  Try different investment topics and build a comprehensive knowledge base for portfolio management.
 
 ## Step 6: Enable Automated Research (Optional)
 
@@ -335,16 +349,19 @@ The scheduler is disabled by default. To enable it:
 ```
 
 Change the `scheduler_enabled` value in `terraform.tfvars`:
+
 ```hcl
 scheduler_enabled = true  # Changed from false
 ```
 
 Then apply the change:
+
 ```bash
 terraform apply
 ```
 
 **Windows PowerShell:**
+
 ```powershell
 # Navigate to the terraform/4_researcher directory
 # Edit terraform.tfvars to set scheduler_enabled = true
@@ -353,6 +370,7 @@ terraform apply
 ```
 
 Type `yes` when prompted. You'll see:
+
 - New resources being created (Lambda function and EventBridge schedule)
 - Output showing `scheduler_status = "ENABLED - Running every 2 hours"`
 
@@ -371,16 +389,19 @@ terraform output scheduler_status
 The scheduler will call your `/research/auto` endpoint every 2 hours. You can:
 
 1. Check Lambda logs to see when the scheduler runs:
+
 ```bash
 aws logs tail /aws/lambda/alex-research-scheduler --follow --region us-east-1
 ```
 
-2. Check App Runner logs to see the actual research being performed:
+1. Check App Runner logs to see the actual research being performed:
+
 ```bash
 aws logs tail /aws/apprunner/alex-researcher/*/application --follow --region us-east-1
 ```
 
-3. Search your S3 Vectors database to see the accumulated research:
+1. Search your S3 Vectors database to see the accumulated research:
+
 ```bash
 # Navigate to the backend/ingest directory
 uv run test_search_s3vectors.py
@@ -391,12 +412,14 @@ uv run test_search_s3vectors.py
 When you want to stop the automated research (to save on API costs):
 
 **Mac/Linux:**
+
 ```bash
 # Navigate to the terraform/4_researcher directory
 terraform apply -var="scheduler_enabled=false"
 ```
 
 **Windows PowerShell:**
+
 ```powershell
 # Navigate to the terraform/4_researcher directory
 terraform apply -var="scheduler_enabled=false"
@@ -407,30 +430,36 @@ This will remove the scheduler but keep all your other services running.
 ## Troubleshooting
 
 ### "Service creation failed"
+
 - Check that your ECR repository exists: `aws ecr describe-repositories`
 - Ensure Docker is running
 - Verify your AWS credentials are configured
 
 ### "Deployment stuck in OPERATION_IN_PROGRESS"
+
 - This is normal for the first deployment (can take 5-10 minutes)
 - Check CloudWatch logs in AWS Console > App Runner > Your service > Logs
 
 ### "Exit code 255" or service won't start
+
 - This usually means the Docker image wasn't built for the right architecture
 - Ensure the deploy script uses `--platform linux/amd64`
 - Rebuild and redeploy
 
 ### "Connection refused" when calling the service
+
 - Ensure the service status is "RUNNING"
 - Check that you're using HTTPS (not HTTP)
 - Verify the service URL is correct
 
 ### "504 Gateway Timeout" errors
+
 - The agent may be taking too long (>30 seconds)
 - This is normal if the agent is browsing multiple web pages
 - The research should still complete and be stored
 
 ### "Invalid model identifier" or Bedrock errors
+
 - Ensure you've requested access to the OpenAI OSS models in us-west-2 (see Step 0)
 - Check that your IAM role has Bedrock permissions (should be added by Terraform)
 - The models are ONLY available in us-west-2 but can be accessed from any region
@@ -461,6 +490,7 @@ Before moving to the next guide, ensure your `.env` file is up to date:
 ```
 
 Verify you have all values from Parts 1-4:
+
 ```
 # Part 1
 AWS_ACCOUNT_ID=123456789012
@@ -481,6 +511,7 @@ OPENAI_API_KEY=sk-...
 ## What's Next?
 
 Congratulations! You now have a complete AI research pipeline:
+
 1. **Researcher Agent** (App Runner) - Generates investment analysis using Bedrock OSS models in us-west-2
 2. **Ingest Pipeline** (Lambda) - Processes and stores documents
 3. **Vector Database** (S3 Vectors) - Cost-effective semantic search
@@ -488,6 +519,7 @@ Congratulations! You now have a complete AI research pipeline:
 5. **Automated Scheduler** (EventBridge + Lambda) - Optional, runs research every 2 hours
 
 Your system can now:
+
 - Generate professional investment research on demand
 - Automatically store and index all research
 - Perform semantic search across your knowledge base
