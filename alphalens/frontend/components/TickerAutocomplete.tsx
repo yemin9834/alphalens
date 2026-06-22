@@ -6,6 +6,7 @@ import type { InstrumentSearchResult } from "../lib/types";
 interface TickerAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
+  onSelectResult?: (result: InstrumentSearchResult) => void;
   getToken?: GetToken;
   placeholder?: string;
   disabled?: boolean;
@@ -14,6 +15,7 @@ interface TickerAutocompleteProps {
 export default function TickerAutocomplete({
   value,
   onChange,
+  onSelectResult,
   getToken,
   placeholder = "NVDA or NVIDIA",
   disabled = false,
@@ -88,6 +90,7 @@ export default function TickerAutocomplete({
     suppressOpenRef.current = true;
     userEngagedRef.current = false;
     onChange(result.ticker);
+    onSelectResult?.(result);
     setOpen(false);
     setResults([]);
     setActiveIndex(-1);

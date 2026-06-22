@@ -6,6 +6,7 @@ import AuthenticatedLayout from "../components/AuthenticatedLayout";
 import WithAuthToken, { type GetTokenFn } from "../components/WithAuthToken";
 import DiscoveryTable from "../components/DiscoveryTable";
 import ErrorBanner from "../components/ErrorBanner";
+import TickerAutocomplete from "../components/TickerAutocomplete";
 import WarningsList from "../components/WarningsList";
 import {
   discoverEcosystemStream,
@@ -138,7 +139,7 @@ function DiscoverPageInner({ getToken }: { getToken: GetTokenFn }) {
 
       await discoverEcosystemStream(
         {
-          coreCompany,
+          coreCompany: coreCompany.trim() || coreTicker.trim(),
           coreTicker: coreTicker.toUpperCase(),
           scope,
         },
@@ -358,20 +359,24 @@ function DiscoverPageInner({ getToken }: { getToken: GetTokenFn }) {
       <section className="card">
         <div className="form-grid">
           <label>
-            Core company
-            <input
-              value={coreCompany}
-              onChange={(e) => setCoreCompany(e.target.value)}
-              disabled={loading}
-            />
-          </label>
-          <label>
-            Ticker
-            <input
+            Core stock
+            <TickerAutocomplete
               value={coreTicker}
-              onChange={(e) => setCoreTicker(e.target.value.toUpperCase())}
+              onChange={(value) => {
+                setCoreTicker(value);
+                if (!value.trim()) setCoreCompany("");
+              }}
+              onSelectResult={(result) => {
+                setCoreTicker(result.ticker);
+                setCoreCompany(result.companyName || result.ticker);
+              }}
+              getToken={HAS_CLERK ? getToken : undefined}
               disabled={loading}
+              placeholder="NVDA or NVIDIA"
             />
+            {coreCompany ? (
+              <span className="ticker-autocomplete-status">{coreCompany}</span>
+            ) : null}
           </label>
           <label>
             Scope
